@@ -102,7 +102,9 @@ public class HuffmanCoding {
 		SortedList<BTNode<Integer,String>> TheList = new SortedArrayList<BTNode<Integer,String>>(OrigFreq.size());
 		
 		//go through the maps, and add each key's frequency (by using GET) and the key itself 
-		for (String Key : OrigFreq.getKeys()) {TheList.add(new BTNode<Integer, String>(OrigFreq.get(Key), Key));}
+		for (String Key : OrigFreq.getKeys()) {
+			TheList.add(new BTNode<Integer, String>(OrigFreq.get(Key), Key));
+		}
 				
 		return TheList;
 	}

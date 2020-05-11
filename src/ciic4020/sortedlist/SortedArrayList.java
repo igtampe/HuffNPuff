@@ -113,7 +113,12 @@ public class SortedArrayList<E extends Comparable<? super E>> extends AbstractSo
 		/* Shift elements up to avoid gaps in the array */
 		for (int j = index; j < size() - 1; j++)
 			elements[j]  = elements[j + 1];
-		return (elements[--currentSize] = null);
+		
+		E result = elements[index];
+		for (int j = index; j < size() - 1; j++)
+		     elements[j]  = elements[j + 1];
+		elements[--currentSize] = null;
+		return result;
 	}
 
 	@Override

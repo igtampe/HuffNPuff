@@ -62,6 +62,7 @@ The code for one symbol should not be a prefix of the code for another symbol, b
 3. Last bit of their code will differentiate between them, say 0 for C, and 1 for D.
 4. Combine these 2 symbols into one single symbol, whose code represents the knowledge that a symbol is either C or D. Let’s call this new symbol CD and whose frequency is 2, which is the sum of the frequencies of C and D.
 5. Now there are three symbols left:
+
 |Symbol|Frequency|
 |-|-|
 |A|4|
@@ -104,10 +105,10 @@ Note that this design should allow you to conveniently test each method after it
 1. The input file will use UTF-8 encoding, which has a character set of 1,112,064 characters, so you may need to specify this in of the file-handling methods you use. However, for the purpose of this project you may safely assume that the input file will have no more than 1,000 distinct characters. You will be provided a sample input file.
 2. The input file will be named stringData.txt and it will reside in a directory named inputData, which resides at the same level as the src directory for your project.
 3. The results to be displayed are as follows:
-    a) Frequency distribution table, in non-ascending order by frequency.
-    b) The original text.
-    c) The encoded text.
-    d) The amount of bytes needed to store the encoded text and the savings percentage compared to the amount of bytes needed for the original text.
+     a) Frequency distribution table, in non-ascending order by frequency.
+     b) The original text.
+     c) The encoded text.
+     d) The amount of bytes needed to store the encoded text and the savings percentage compared to the amount of bytes needed for the original text.
 
 *You will be provided a sample output file.*<br>
 *Note: Technically, if we compress a file/message using Huffman coding, we would also need to include a Huffman table in the file, so that the user or software on the other end may know how to decode the file/message. However, we will disregard this aspect in this project.*
@@ -122,7 +123,6 @@ Note that we can use the same class to later map every symbol to its Huffman Cod
 
 ```Huffman-Tree(FD): # Receives FD data and returns the root of a Huffman Tree
  1 size ← | FD |
-Prof. Juan O. López Gerena C4020/I4035 Project 3 Specs Page 5 of 7
  2 Create sorted list SL of nodes
  3 SL ← FD # Store the frequencies and corresponding symbols in freq order
  4 for i ← 1 to size − 1 do
@@ -133,7 +133,8 @@ Prof. Juan O. López Gerena C4020/I4035 Project 3 Specs Page 5 of 7
  9 N.symbol ← x.symbol + y.symbol
 10 SL.add(N)
 11 # SL should only have 1 node, the “root” of the tree
-12 return MIN-FREQ-REMOVE(SL)```
+12 return MIN-FREQ-REMOVE(SL)
+```
 
 After the tree is finished, we need to now map every symbol to its Huffman Code, according to the tree. Then just loop over every symbol of the input text and print its corresponding code.<br><br>
 

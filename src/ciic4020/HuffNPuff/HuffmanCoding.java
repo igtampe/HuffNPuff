@@ -1,5 +1,7 @@
 package ciic4020.HuffNPuff;
 
+import java.text.DecimalFormat;
+
 import IO.TextFileManager;
 import ciic4020.bst.BTNode;
 import ciic4020.hashtable.HashTableSC;
@@ -23,10 +25,13 @@ public class HuffmanCoding {
 		
 		//Hello yes, it is time to Huff, Puff, and *blow* away the unnecessary data.
 			
-		String TheHayHouse=LoadData("inputData/stringData.txt");
-		Map<Character,Integer> EachHayBale = compute_fd(TheHayHouse);
-		process_results(EachHayBale, TheHayHouse, Encode(huffman_code(huffman_tree(EachHayBale)), TheHayHouse));
+		String TheHayHouse=LoadData("inputData/stringData.txt"); //The hayhouse includes the piggies, the only important data
+		Map<Character,Integer> EachHayBale = compute_fd(TheHayHouse); //Each Hay Bale represents the frequency of each type of block that contains the important data
+		Map<Character,String> TheBigBadWolf = huffman_code(huffman_tree(EachHayBale)); //The Big Bad Wolf represents the huffman code we'll need to blow away the haybales, leaving only the important data.
+		String ThePiggies = Encode(TheBigBadWolf, TheHayHouse); //Encode blows away the extra data, leaving only the piggies (The encoded data).
+		process_results(EachHayBale, TheBigBadWolf,TheHayHouse, ThePiggies);
 		
+		//There's only one piggy in the hay house, but just ignore that for me, please.
 	}
 	
 
@@ -92,11 +97,6 @@ public class HuffmanCoding {
 			
 			Node.setKey(LeftNode.getKey()+RightNode.getKey()); //Set key
 			Node.setValue(LeftNode.getValue()+RightNode.getValue()); //Set value
-
-			//Show the node we're about to add added
-			System.out.print("LEFT: " + LeftNode + "\t RIGHT: " + RightNode + "\t NEW NODE: "+Node+" \t REMAINING: ");
-			for (int j = 0; j < SL.size(); j++) {System.out.print(SL.get(j) + " ");}
-			System.out.println();
 			
 			SL.add(Node); //Re-add the node.
 
@@ -128,7 +128,7 @@ public class HuffmanCoding {
 	 * @return A map with all of the Characters in the tree mapped to their code
 	 */
 	public static Map<Character,String> huffman_code(BTNode<Integer, String> Root){
-		HashTableSC<Character, String> TheMapToTheHayHouse = new HashTableSC<Character, String>(5, new SimpleHashFunction<Character>());
+		HashTableSC<Character, String> TheMapToTheHayHouse = new HashTableSC<Character, String>(4, new SimpleHashFunction<Character>());
 		AddToHuffmanCode("", TheMapToTheHayHouse, Root);
 		return TheMapToTheHayHouse;
 	}
@@ -148,12 +148,7 @@ public class HuffmanCoding {
 		if ((Root.getLeftChild()!=null)) {
 		
 			//And it's value is only one string long (osea it's an end node), add it to the code.
-			if((Root.getLeftChild().getValue().length()==1)) {
-			
-				System.out.println("Added " + Root.getLeftChild().getValue() + ":" + Prefix+"0");
-				Code.put(Root.getLeftChild().getValue().charAt(0), Prefix + "0");
-				
-			}
+			if((Root.getLeftChild().getValue().length()==1)) {Code.put(Root.getLeftChild().getValue().charAt(0), Prefix + "0");}
 			
 			//Otherwise, it's not and end node. Find the end nodes.
 			else {AddToHuffmanCode(Prefix+0, Code, Root.getLeftChild());}
@@ -171,8 +166,7 @@ public class HuffmanCoding {
 			else {AddToHuffmanCode(Prefix+1, Code, Root.getRightChild());}
 			
 		}
-		
-		
+				
 	}
 	
 	/***
@@ -197,31 +191,41 @@ public class HuffmanCoding {
 	 * character in the output, and 8 bytes per character (as per ASCII) in the input).
 	 *  
 	 * @param FD Frequency distribution map, where each character is mapped to its frequency
+	 * @param Code The Huffman Code used to encode the text.
 	 * @param Input Input text
 	 * @param Output Output (encoded) text.
 	 */
-	public static void process_results(Map<Character,Integer> FD, String Input, String Output) {
+	public static void process_results(Map<Character,Integer> FD, Map<Character,String> Code, String Input, String Output) {
 		
 		//Get frequencies sorted
 		SortedList<BTNode<Integer,String>> TheList = FreqToSortedList(FD);
 		
 		//Table Header
-		System.out.println("Symbol \t Frequency \t Code");
-		System.out.println("------ \t --------- \t ----");
+		System.out.println("Symbol\tFrequency\tCode");
+		System.out.println("------\t---------\t----");
 		
 		//Display these cositas in reverse order.
-		for (int i = TheList.size()-1; i > -1; i--) {System.out.println(TheList.get(i).getValue() + "|" + TheList.get(i).getKey());}
+		for (int i = TheList.size()-1; i > -1; i--) {System.out.println(TheList.get(i).getValue() + "\t" + TheList.get(i).getKey()+"\t\t" + Code.get(TheList.get(i).getValue().charAt(0)));}
 		
 		//Display Original text
+		System.out.println();
+		System.out.println("Original string:");
 		System.out.println(Input);
 		
 		//Display the encoded text
+		System.out.println("Encoded string:");
 		System.out.println(Output);
 
 		//Display the compression percentage.
+		System.out.println();
+		System.out.println("The original string requires "+Input.length()+" bytes.");
+		int OutputBytes=(int) Math.ceil(Output.length()/8.0);
+		System.out.println("The encoded string requires "+OutputBytes+" bytes.");
 		
+		String PercentageDisplay = new DecimalFormat("##.##").format((1-(Math.ceil(Output.length()/8.0)/(Input.length()+0.0)))*100);
+		
+		System.out.println("Difference in space required is " + PercentageDisplay + "%.");
 		//The calculation is the Output's Length (since each character is one byte) compared to ASCII's 8 bytes per character.
-		System.out.println(Math.floor((Output.length()/(Input.length()*8.0))*100) + "%"); 
 		
 		//And we're done/
 	}

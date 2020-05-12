@@ -101,8 +101,17 @@ public class HuffmanCoding {
 			BTNode<Integer,String> LeftNode = SL.removeIndex(0); //get index 0 which *should* be the smallest one.
 			BTNode<Integer,String> RightNode = SL.removeIndex(0); //Get index 0 again, which also shoudl be the smallest one.		
 			
-			Node.setLeftChild(LeftNode); //Set Left Node
-			Node.setRightChild(RightNode); //Set Right Node
+			//Tie Breaker
+			if((LeftNode.getKey().equals(RightNode.getKey()))&&(LeftNode.getValue().compareTo(RightNode.getValue())>0)) {
+				
+				//Set the smaller node on the left, which in this case is the node that was *supposed* to be the right
+				Node.setLeftChild(RightNode); 
+				Node.setRightChild(LeftNode);						
+				
+			}else {
+				Node.setLeftChild(LeftNode); //Set Left Node
+				Node.setRightChild(RightNode); //Set Right Node				
+			}						
 			
 			Node.setKey(LeftNode.getKey()+RightNode.getKey()); //Set key
 			Node.setValue(LeftNode.getValue()+RightNode.getValue()); //Set value
@@ -166,7 +175,7 @@ public class HuffmanCoding {
 			if((Root.getLeftChild().getValue().length()==1)) {Code.put(Root.getLeftChild().getValue().charAt(0), Prefix + "0");}
 			
 			//Otherwise, it's not and end node. Find the end nodes.
-			else {AddToHuffmanCode(Prefix+0, Code, Root.getLeftChild());}
+			else {AddToHuffmanCode(Prefix+"0", Code, Root.getLeftChild());}
 			
 		}
 		
@@ -178,7 +187,7 @@ public class HuffmanCoding {
 			if((Root.getRightChild().getValue().length()==1)) {Code.put(Root.getRightChild().getValue().charAt(0), Prefix + "1");}
 			
 			//Otherwise, it's not and end node. Find the end nodes.
-			else {AddToHuffmanCode(Prefix+1, Code, Root.getRightChild());}
+			else {AddToHuffmanCode(Prefix+"1", Code, Root.getRightChild());}
 			
 		}
 				

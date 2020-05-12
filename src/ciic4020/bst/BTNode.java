@@ -87,4 +87,10 @@ public class BTNode<K extends Comparable<? super K>, V> implements PrintableNode
 		return key.compareTo(o.getKey());
 	}
 
+	@Override
+	public String toString() {
+		return key + ":" + value;
+	}
+	
+	
 }

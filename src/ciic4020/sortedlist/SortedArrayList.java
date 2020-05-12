@@ -108,16 +108,24 @@ public class SortedArrayList<E extends Comparable<? super E>> extends AbstractSo
 
 	@Override
 	public E removeIndex(int index) {
-		if (index < 0 || index >= size())
-			throw new IndexOutOfBoundsException();
-		/* Shift elements up to avoid gaps in the array */
-		for (int j = index; j < size() - 1; j++)
-			elements[j]  = elements[j + 1];
+		//OK let's actually fix this up.
 		
+		//If we're out of bounds, through that we're out of bounds.
+		if (index < 0 || index >= size()) {throw new IndexOutOfBoundsException();}
+		
+		//Save the result for later
 		E result = elements[index];
-		for (int j = index; j < size() - 1; j++)
-		     elements[j]  = elements[j + 1];
-		elements[--currentSize] = null;
+		
+		//Move elements up
+		for (int j = index; j < size() - 1; j++) {elements[j]  = elements[j + 1];}
+		
+		//Nullify the last element
+		elements[currentSize-1] = null;
+		
+		//Update Currentsize
+		currentSize--;
+		
+		//Return the result
 		return result;
 	}
 

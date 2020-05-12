@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes","url":"allclasses-index.html"},{"p":"HuffNPuff","l":"HuffmanCoding"},{"p":"IO","l":"TextFileManager"}]

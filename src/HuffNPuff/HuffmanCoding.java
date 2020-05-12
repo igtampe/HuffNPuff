@@ -1,4 +1,4 @@
-package ciic4020.HuffNPuff;
+package HuffNPuff;
 
 import java.text.DecimalFormat;
 
@@ -18,8 +18,14 @@ import ciic4020.sortedlist.SortedList;
 public class HuffmanCoding {
 
 	/**
-	 * Takes the data stored in InputData/StringData.txt and encodes it using Huffman Coding.
-	 * @param args
+	 * Takes the data stored in InputData/StringData.txt and encodes it using Huffman Coding. Then displays relevant data, including:
+	 * <ul>
+	 * <li>A table displaying Character, Frequency, and Huffman Code</li>
+	 * <li>The original text</li>
+	 * <li>The Encoded text</li>
+	 * <li>The percent of space saved by storing the text as a Huffman-Coded string, assuming 1bit per character in the output, and 8 bits per character in the input.</li>
+	 * </ul>
+	 * @param args The arguements do nothing.
 	 */
 	public static void main(String[] args) {
 		
@@ -36,7 +42,7 @@ public class HuffmanCoding {
 	
 
 	/**
-	 * Uses TextFileManager to read and return the first line of the specified file
+	 * Uses TextFileManager to read and return the first line of the specified file.
 	 * @param filename The file you need the first line of
 	 * @return The first line of the file you specified, or "" if an IOerror occurred, or if the file was not found.
 	 */
@@ -46,7 +52,7 @@ public class HuffmanCoding {
 	}
 	
 	/**
-	 * Comptues the Frequency Distribution of the characters in the string. Uses a strategy from FreqFinder, a previous project.
+	 * Comptues the Frequency Distribution of the characters in the string. Uses the MapFD strategy from FreqFinder, though it has been modified to use HashtableSC, instead of the default Java Hashtable.
 	 * @param OriginalData The string you want to compute the frequency distribution of
 	 * @return A map, where the key is the character, and the data is its frequenecy.
 	 */
@@ -61,15 +67,11 @@ public class HuffmanCoding {
 		//THESE ARE THE FACES, OF EVIL!
 		for (Character Face : OriginalData.toCharArray()) {
 			
-			//we already have it.
+			//If we already have it.
 			if(TheMap.containsKey(Face)) {TheMap.put(Face, TheMap.get(Face) + 1);}
 			
-			//We don't have it
-			else {TheMap.put(Face,1);}
-			
-			//Real talk I love how flexible Java is with comments that I can put a comment between the if and else.
-			//I hope this doesn't break convention or something.
-			
+			//If we don't have it
+			else {TheMap.put(Face,1);}			
 		}
 		
 		//now lets copy it to the arraylist, and SQUADALA! WE'RE OFF!
@@ -77,8 +79,15 @@ public class HuffmanCoding {
 	}
 	
 	/***
-	 * Creates a Huffman Code Tree using the specified data.
-	 * @param CharFreq A map of character frequency, of types <Character,Frequency>
+	 * Creates a Huffman Code Tree using the specified character frequency map. The process is as follows: <br>
+	 * 
+	 * <ol>
+	 * <li>Take the frequency data and make a sortedlist (Stored by frequency), where each entry is a node that holds its frequency, and it's character (as a string)</li>
+	 * <li>Find the 2 least frequent symbols</li>
+	 * <li>Create a new node, where the left is the least, and the right is the second least item we previously found. The key of this new node is the sum of the two frequencies, and its value is the two strings put together</li>
+	 * <li>Repeat until there is only one symbole left, which will be the root of the tree.</li>
+	 * </ol>
+	 * @param CharFreq A map of character frequency, where each character is mapped to its frequency (as an integer)
 	 * @return The root node of the tree with Frequency as its key, and the character as its value.
 	 */
 	public static BTNode<Integer, String> huffman_tree(Map<Character,Integer> CharFreq) {
@@ -99,7 +108,6 @@ public class HuffmanCoding {
 			Node.setValue(LeftNode.getValue()+RightNode.getValue()); //Set value
 			
 			SL.add(Node); //Re-add the node.
-
 			
 		}
 		
@@ -118,12 +126,19 @@ public class HuffmanCoding {
 		
 		//go through the maps, and add each key's frequency (by using GET) and the key itself 
 		for (Character Key : OrigFreq.getKeys()) {TheList.add(new BTNode<Integer, String>(OrigFreq.get(Key), Key.toString()));}
-				
 		return TheList;
+		
 	}
 	
 	/***
-	 * Uses a Huffman Tree to generate a map with all the characters mapped to their huffman code
+	 * Uses a Huffman Tree to generate a map with all the characters mapped to their huffman code. This is accomplished recursively using a private, helper function.
+	 * It goes through the tree in in-order, by checking that the root isn't null, then checking the left node, and then checking the right node. <br><br>
+	 * 
+	 * The method takes with it a map which holds the codes, and a prefix, which depends on the direction it traveled to reach the node. 0 for left, and 1 for right.
+	 * When a node is checked, if the string it holds is of length one, it assumes its an end node, and adds it as a huffman code to the map using the prefix, and one more bit to specify the direction it found it.
+	 * Otherwise, it'll recursively call itself to check the left and right child nodes of the node it found.
+	 * <br>
+	 *   
 	 * @param Root Root node of the Huffman Tree
 	 * @return A map with all of the Characters in the tree mapped to their code
 	 */
@@ -170,7 +185,8 @@ public class HuffmanCoding {
 	}
 	
 	/***
-	 * Takes a Huffman code, and an input string, and returns an huffman-coded text.
+	 * Takes a Huffman code, and an input string, and returns an huffman-coded text.<br> 
+	 * It goes through each character in the string, and builds a return string basing itself on whatever code is linked to the character in the provided code map.
 	 * @param Code The code, where each character is mapped to its respective Huffman code.
 	 * @param Input Input string that will be encoded
 	 * @return The text, but encoded.
@@ -186,9 +202,9 @@ public class HuffmanCoding {
 	}
 
 	/**
-	 * Displays the results of the Huffman Coding procedure, including the frequency distribution (in non-ascending order)<br>
-	 * The input text, the output (encoded) text, and how much smaller the output would be to store (assuming 1 byte per <br>
-	 * character in the output, and 8 bytes per character (as per ASCII) in the input).
+	 * Displays the results of the Huffman Coding procedure, including the frequency distribution (in non-ascending order)
+	 * The code linked to each character, The input text, the output (encoded) text, and the amount of space saved by encoding it (assuming 1 bit per
+	 * character in the output, and 8 bits per character (as per ASCII) in the input).
 	 *  
 	 * @param FD Frequency distribution map, where each character is mapped to its frequency
 	 * @param Code The Huffman Code used to encode the text.
@@ -219,13 +235,16 @@ public class HuffmanCoding {
 		//Display the compression percentage.
 		System.out.println();
 		System.out.println("The original string requires "+Input.length()+" bytes.");
+
+		//Make sure we format the bytes correctly
 		int OutputBytes=(int) Math.ceil(Output.length()/8.0);
 		System.out.println("The encoded string requires "+OutputBytes+" bytes.");
 		
+		//Prepare the percentage display
 		String PercentageDisplay = new DecimalFormat("##.##").format((1-(Math.ceil(Output.length()/8.0)/(Input.length()+0.0)))*100);
 		
+		//And display the percentage
 		System.out.println("Difference in space required is " + PercentageDisplay + "%.");
-		//The calculation is the Output's Length (since each character is one byte) compared to ASCII's 8 bytes per character.
 		
 		//And we're done/
 	}

@@ -12,8 +12,7 @@ import ciic4020.list.ArrayList;
 
 /**
  * A class to read and write to text files. I made this separately to not have to repeat this ever, and to re-use it in future projects. It'll probably grow when I need to do more things.
- * 
- * We had to modify it a bit this time around, but thank god I had it pre-made. Thank u past me!
+ * We had to modify it a bit this time around, but thank god I had it pre-made. Thank you past me!
  * 
  * @author igtampe
  * 
@@ -23,8 +22,8 @@ public class TextFileManager {
 	private File theFile;
 
 	/**
-	 * Creates a text file manager
-	 * @param File The file u want to manage
+	 * Creates a text file manager. If the file doesn't exist, it'll create it.
+	 * @param Filename The file you want to manage
 	 * @throws IOException if it cannot create it.
 	 */
 	public TextFileManager(String Filename) throws IOException {
@@ -36,10 +35,10 @@ public class TextFileManager {
 	}
 
 	/**
-	 * Creates a text file manager
-	 * @param Filename The file u want to manage
-	 * @param Overwrite	If u want to erase it and re-write it.
-	 * @throws IOException
+	 * Creates a text file manager. If the file doesn't exist, it'll create it.
+	 * @param Filename The file you want to manage
+	 * @param Overwrite	If true, TFM will delete the file and create a new, empty one, in its place.
+	 * @throws IOException If it cannot delete, or create the file.
 	 */
 	public TextFileManager(String Filename, Boolean Overwrite) throws IOException {
 		filename=Filename;
@@ -89,8 +88,8 @@ public class TextFileManager {
 
 
 	/**
-	 * Turns this manager into a string, by getting the first line of the file.
-	 * @return The file as an array.
+	 * Gets the first line of the text file being managed.
+	 * @return The first line of the file
 	 */
 	public String toString() {
 
@@ -121,7 +120,8 @@ public class TextFileManager {
 	
 	/**
 	 * Prints each string in the list out into a file (with each element representing a line) <b>(will overwrite!)</b>
-	 * @param StuffToPrint
+	 * @param StuffToPrint An arraylist of the stuff you want to print to this file.
+	 * @throws Exception Throws an exception if it cannot write to the file.
 	 */
 	public void print(ArrayList<String> StuffToPrint) throws Exception {
 		//Time to write

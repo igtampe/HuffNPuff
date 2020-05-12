@@ -105,11 +105,11 @@ public class BinaryTreePrinter
                     } else {
 
                         for (int k = 0; k < hpw; k++) {
-                            System.out.print(j % 2 == 0 ? " " : "â”€");
+                            System.out.print(j % 2 == 0 ? " " : "-");
                         }
-                        System.out.print(j % 2 == 0 ? "â”Œ" : "â”�");
+                        System.out.print(j % 2 == 0 ? "-" : "-");
                         for (int k = 0; k < hpw; k++) {
-                            System.out.print(j % 2 == 0 ? "â”€" : " ");
+                            System.out.print(j % 2 == 0 ? "-" : " ");
                         }
                     }
                 }

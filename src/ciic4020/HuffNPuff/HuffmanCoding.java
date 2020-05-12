@@ -8,12 +8,21 @@ import ciic4020.map.Map;
 import ciic4020.sortedlist.SortedArrayList;
 import ciic4020.sortedlist.SortedList;
 
+/**
+ * HuffmanCoding contains all the necessary methods to encode text using the Huffman Code algorithm 
+ * @author igtampe
+ *
+ */
 public class HuffmanCoding {
 
+	/**
+	 * Takes the data stored in InputData/StringData.txt and encodes it using Huffman Coding.
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		
 		//Hello yes, it is time to Huff, Puff, and *blow* away the unnecessary data.
-		
+			
 		String TheHayHouse=LoadData("inputData/stringData.txt");
 		Map<Character,Integer> EachHayBale = compute_fd(TheHayHouse);
 		process_results(EachHayBale, TheHayHouse, Encode(huffman_code(huffman_tree(EachHayBale)), TheHayHouse));
@@ -81,14 +90,17 @@ public class HuffmanCoding {
 			Node.setLeftChild(LeftNode); //Set Left Node
 			Node.setRightChild(RightNode); //Set Right Node
 			
-			System.out.print("LEFT: " + LeftNode + ",RIGHT: " + RightNode + ", REMAINING: ");
+			Node.setKey(LeftNode.getKey()+RightNode.getKey()); //Set key
+			Node.setValue(LeftNode.getValue()+RightNode.getValue()); //Set value
+
+			//Show the node we're about to add added
+			System.out.print("LEFT: " + LeftNode + "\t RIGHT: " + RightNode + "\t NEW NODE: "+Node+" \t REMAINING: ");
 			for (int j = 0; j < SL.size(); j++) {System.out.print(SL.get(j) + " ");}
 			System.out.println();
 			
-			Node.setKey(LeftNode.getKey()+RightNode.getKey()); //Set key
-			Node.setValue(LeftNode.getValue()+RightNode.getValue()); //Set value
-			
 			SL.add(Node); //Re-add the node.
+
+			
 		}
 		
 		//Once we're done with this, there should only be one node left.
@@ -129,30 +141,37 @@ public class HuffmanCoding {
 	 */
 	private static void AddToHuffmanCode(String Prefix,Map<Character,String> Code, BTNode<Integer,String> Root) {
 		
-		//Add the right child
-		Code.put(Root.getRightChild().getValue().charAt(0), Prefix + "1");
+		//If it's nothing, return
+		if (Root==null) {return;}
 		
-		//remove me once complete
-		System.out.print(Prefix+"1: " + Root.getRightChild().getValue());
-		if(Root.getRightChild().getValue().length()>1) {System.out.print(" Extra Characters Trimmed");}
-		System.out.println();
+		//if there is a left child...
+		if ((Root.getLeftChild()!=null)) {
 		
-		//Now let's check if the next left one is the last one.
-		if(Root.getLeftChild().getLeftChild()==null) {
-			//the left one is the last one. Add it.
-			Code.put(Root.getLeftChild().getValue().charAt(0), Prefix + "0");
-
-			//Remove me once complete
-			System.out.print(Prefix+"0: " + Root.getLeftChild().getValue());
-			if(Root.getLeftChild().getValue().length()>1) {System.out.print(" Extra Characters Trimmed");}
-			System.out.println();
-		}
-		else {
-			//The left one isn't the last one. Get on with the next one.
-			AddToHuffmanCode(Prefix+"0", Code, Root.getLeftChild());			
-		}
+			//And it's value is only one string long (osea it's an end node), add it to the code.
+			if((Root.getLeftChild().getValue().length()==1)) {
 			
-		return;
+				System.out.println("Added " + Root.getLeftChild().getValue() + ":" + Prefix+"0");
+				Code.put(Root.getLeftChild().getValue().charAt(0), Prefix + "0");
+				
+			}
+			
+			//Otherwise, it's not and end node. Find the end nodes.
+			else {AddToHuffmanCode(Prefix+0, Code, Root.getLeftChild());}
+			
+		}
+		
+		
+		//If there is a right child...
+		if ((Root.getRightChild()!=null)) {
+			
+			//And it's value is only one string long (osea it's an end node), add it to the code.
+			if((Root.getRightChild().getValue().length()==1)) {Code.put(Root.getRightChild().getValue().charAt(0), Prefix + "1");}
+			
+			//Otherwise, it's not and end node. Find the end nodes.
+			else {AddToHuffmanCode(Prefix+1, Code, Root.getRightChild());}
+			
+		}
+		
 		
 	}
 	
@@ -187,7 +206,8 @@ public class HuffmanCoding {
 		SortedList<BTNode<Integer,String>> TheList = FreqToSortedList(FD);
 		
 		//Table Header
-		System.out.println("C|Freq");
+		System.out.println("Symbol \t Frequency \t Code");
+		System.out.println("------ \t --------- \t ----");
 		
 		//Display these cositas in reverse order.
 		for (int i = TheList.size()-1; i > -1; i--) {System.out.println(TheList.get(i).getValue() + "|" + TheList.get(i).getKey());}
